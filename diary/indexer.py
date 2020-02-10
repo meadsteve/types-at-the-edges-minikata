@@ -1,7 +1,7 @@
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, date
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 from pydantic import ValidationError
 from pydantic.main import BaseModel
@@ -13,7 +13,7 @@ from .error_logging import DataError
 class DiaryEntry(BaseModel):
     title: str
     body: str
-    category: str
+    categories: List[str]
     entry_ts: datetime
 
 
@@ -32,10 +32,15 @@ class MyApiClient:
     def __init__(self, server: str):
         self.server = server
 
-    def fetch_entry(self, id: int) -> DiaryEntry:
+    def fetch_entry(self, id: int) -> Optional[DiaryEntry]:
         payload = requests.get(f"https://{self.server}/journal/entry/{id}")
         json = payload.json()
         try:
+            if json["entry_ts"] == "PENDING":
+                return None
+            if not json["title"]:
+                json["title"] = ""
+            json["categories"] = json["category"] if isinstance(json["category"], list) else [json["category"]]
             return DiaryEntry(**json)
         except ValidationError as validation_failure:
             raise DataError(json, validation_failure)
@@ -44,15 +49,13 @@ class MyApiClient:
 def run_indexing(server: str):
     category_index: CategoryIndex = defaultdict(list)
     title_index: TitleIndex = defaultdict(list)
-    entries: List[DiaryEntry] = []
 
     client = MyApiClient(server)
-    for entry_id in range(0, 1000):
-        new_entry = client.fetch_entry(entry_id)
-
-        entries.append(new_entry)
-        add_to_category_index(category_index, new_entry)
-        add_to_title_index(title_index, new_entry)
+    all_entries = (client.fetch_entry(entry_id) for entry_id in range(0, 1000))
+    entries = [entry for entry in all_entries if entry is not None]
+    for entry in entries:
+        add_to_category_index(category_index, entry)
+        add_to_title_index(title_index, entry)
 
     entries.sort(key=diary_entry_date)
 
@@ -64,7 +67,8 @@ def add_to_title_index(title_index: TitleIndex, new_entry: DiaryEntry):
 
 
 def add_to_category_index(category_index: CategoryIndex, new_entry: DiaryEntry):
-    category_index[new_entry.category.lower()].append(new_entry)
+    for category in new_entry.categories:
+        category_index[category.lower()].append(new_entry)
 
 
 def diary_entry_date(entry: DiaryEntry) -> date:
