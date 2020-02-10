@@ -5,7 +5,7 @@ from typing import Dict, List
 
 from pydantic.main import BaseModel
 
-from diary.fakes import requests
+from fakes import requests
 
 
 class DiaryEntry(BaseModel):
