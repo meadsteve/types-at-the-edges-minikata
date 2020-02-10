@@ -6,7 +6,7 @@ setup:
 	pipenv install
 
 test:
-	pipenv run mypy --ignore-missing-imports --strict-optional --check-untyped-defs diary
+	pipenv run mypy --config-file mypy.ini --warn-unused-configs diary
 	pipenv run pytest diary
 
 run-0:
