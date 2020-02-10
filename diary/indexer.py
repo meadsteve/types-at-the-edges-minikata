@@ -3,9 +3,11 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Dict, List
 
+from pydantic import ValidationError
 from pydantic.main import BaseModel
 
 from fakes import requests
+from .error_logging import DataError
 
 
 class DiaryEntry(BaseModel):
@@ -32,7 +34,11 @@ class MyApiClient:
 
     def fetch_entry(self, id: int) -> DiaryEntry:
         payload = requests.get(f"https://{self.server}/journal/entry/{id}")
-        return DiaryEntry(**payload.json())
+        json = payload.json()
+        try:
+            return DiaryEntry(**json)
+        except ValidationError as validation_failure:
+            raise DataError(json, validation_failure)
 
 
 def run_indexing(server: str):

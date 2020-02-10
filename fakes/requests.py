@@ -14,19 +14,23 @@ class Response:
 url_pattern = re.compile(r"https://(?P<server>[^/]+)/.+")
 
 
-EXAMPLE_PAYLOADS: Dict[str, List] = {
-    "dev": [
-        {"title": "today was fun", "body": "it really was", "category": "general", "entry_ts": "2020-01-10 12:22"},
-        {"title": "today was fun  ", "body": "it really was", "category": "generaL", "entry_ts": "2020-01-11 12:00"},
-        {"title": "all good", "body": "bloop", "category": "General", "entry_ts": "2020-01-12 05:22"}
-    ],
-    "the-first-day": [
-        {"title": "today was fun", "body": "it really was", "category": "general", "entry_ts": "2020-01-04 12:22"},
-        {"title": "today was fun  ", "body": "it really was", "category": "generaL", "entry_ts": "2020-01-09 12:22"},
-        {"title": "all good", "body": "bloop", "category": "General", "entry_ts": "2020-01-13 12:22"},
-        {"title": None, "body": "I'm typing what I'm thinking. I don't know what this is or where it'll go", "category": "Stream of consciousness", "entry_ts": "2019-01-09 12:22"}
-    ]
-}
+EXAMPLE_PAYLOADS: Dict[str, List] = {}
+
+
+EXAMPLE_PAYLOADS["dev"] = [
+    {"title": "today was fun", "body": "it really was", "category": "general", "entry_ts": "2020-01-10 12:22"},
+    {"title": "today was fun  ", "body": "it really was", "category": "generaL", "entry_ts": "2020-01-11 12:00"},
+    {"title": "all good", "body": "bloop", "category": "General", "entry_ts": "2020-01-12 05:22"}
+]
+
+EXAMPLE_PAYLOADS["the-first-day"] = EXAMPLE_PAYLOADS["dev"] + [
+    {"title": None, "body": "I'm typing what I'm thinking. I don't know what this is or where it'll go", "category": "Stream of consciousness", "entry_ts": "2019-01-09 12:22"}
+]
+
+EXAMPLE_PAYLOADS["the-second-day"] = EXAMPLE_PAYLOADS["the-first-day"] + [
+    {"title": "stuff", "body": "I like things too", "category": ["ownership", "things"], "entry_ts": "2019-01-09 12:22"},
+    {"title": None, "body": "I'm typing what I'm thinking. I don't know what this is or where it'll go", "category": ["Live", "Typing"], "entry_ts": "2019-01-09 12:22"}
+]
 
 
 def get(path):

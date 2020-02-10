@@ -4,7 +4,7 @@ from diary.indexer import run_indexing
 
 if __name__ == "__main__":
     try:
-        indexed = run_indexing("the-first-day")
+        indexed = run_indexing("the-second-day")
         print("Successfully indexed data")
         print(f"{len(indexed.entries)} entries")
         print(f"{len(indexed.title_index.keys())} unique titles")
@@ -15,6 +15,9 @@ if __name__ == "__main__":
         print("")
         print(str(ooops.validation_error))
         print("")
-        print("We spoke to the owners of the API and they discovered that not all entries have a title.")
-        print("As a team we decided these should be indexed as having an empty string for the title.")
+        print("The raw data for the entry was")
+        print(str(ooops.value))
+        print("")
+        print("We spoke to the owners of the API and they've told us that some beta users can apply multiple categories.")
+        print("We should index the entry against each of the categories it has.")
         print("Can you update the code please?")
