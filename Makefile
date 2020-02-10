@@ -1,4 +1,4 @@
-.PHONY: setup test run-0 run-1 run-2
+.PHONY: setup test run-0 run-1 run-2 run-3
 
 export PYTHONPATH := $(PWD):$(PYTHONPATH)
 
@@ -17,3 +17,6 @@ run-1:
 
 run-2:
 	pipenv run python scripts/day_2.py
+
+run-3:
+	pipenv run python scripts/day_3.py

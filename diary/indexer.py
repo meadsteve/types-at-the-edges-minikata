@@ -1,6 +1,6 @@
 from collections import defaultdict
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, date
 from typing import Dict, List
 
 from pydantic import ValidationError
@@ -44,7 +44,7 @@ class MyApiClient:
 def run_indexing(server: str):
     category_index: CategoryIndex = defaultdict(list)
     title_index: TitleIndex = defaultdict(list)
-    entries = []
+    entries: List[DiaryEntry] = []
 
     client = MyApiClient(server)
     for entry_id in range(0, 1000):
@@ -54,7 +54,7 @@ def run_indexing(server: str):
         add_to_category_index(category_index, new_entry)
         add_to_title_index(title_index, new_entry)
 
-    entries.sort(key=lambda i: i.entry_ts)
+    entries.sort(key=diary_entry_date)
 
     return IndexedData(entries, category_index, title_index)
 
@@ -65,3 +65,7 @@ def add_to_title_index(title_index: TitleIndex, new_entry: DiaryEntry):
 
 def add_to_category_index(category_index: CategoryIndex, new_entry: DiaryEntry):
     category_index[new_entry.category.lower()].append(new_entry)
+
+
+def diary_entry_date(entry: DiaryEntry) -> date:
+    return entry.entry_ts.date()
