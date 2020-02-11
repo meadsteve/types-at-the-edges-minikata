@@ -3,6 +3,7 @@
 export PYTHONPATH := $(PWD):$(PYTHONPATH)
 
 setup:
+	pipenv --python 3
 	pipenv install
 
 test:
