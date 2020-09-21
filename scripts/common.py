@@ -1,3 +1,5 @@
+from traceback import print_tb
+
 from diary.error_logging import DataError
 from diary.indexer import run_indexing
 
@@ -21,5 +23,6 @@ def handle_error(error: Exception, extra_text):
         print(str(error.value))
     else:
         print(str(error))
+        print_tb(error.__traceback__)
     print("")
     print(extra_text)

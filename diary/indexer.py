@@ -38,7 +38,7 @@ class MyApiClient:
         try:
             return DiaryEntry(**json)
         except ValidationError as validation_failure:
-            raise DataError(json, validation_failure)
+            raise DataError(json, validation_failure) from validation_failure
 
 
 def run_indexing(server: str):
