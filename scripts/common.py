@@ -21,8 +21,8 @@ def handle_error(error: Exception, extra_text):
         print("")
         print("The raw data for the entry was")
         print(str(error.value))
+        print("")
+        print(extra_text)
     else:
         print(str(error))
         print_tb(error.__traceback__)
-    print("")
-    print(extra_text)
