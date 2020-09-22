@@ -1,7 +1,7 @@
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import datetime, date
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 from pydantic import ValidationError
 from pydantic.main import BaseModel
@@ -13,7 +13,7 @@ from .error_logging import DataError
 class DiaryEntry(BaseModel):
     title: Optional[str]
     body: str
-    category: str
+    category: Union[str, List[str]]
     entry_ts: datetime
 
 
@@ -64,7 +64,9 @@ def add_to_title_index(title_index: TitleIndex, new_entry: DiaryEntry):
 
 
 def add_to_category_index(category_index: CategoryIndex, new_entry: DiaryEntry):
-    category_index[new_entry.category.lower()].append(new_entry)
+    categories = [new_entry.category] if isinstance(new_entry.category, str) else new_entry.category
+    for category in categories:
+        category_index[category.lower()].append(new_entry)
 
 
 def diary_entry_date(entry: DiaryEntry) -> date:
