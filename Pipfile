@@ -7,7 +7,7 @@ verify_ssl = true
 
 [packages]
 mypy = "==0.782"
-pydantic = "~=1.6.1"
+pydantic = "~=1.6.2"
 pytest = "~=6.0"
 dataclasses = "==0.6"
 typing-extensions = "*"
